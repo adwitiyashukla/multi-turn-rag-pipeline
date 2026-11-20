@@ -1,0 +1,88 @@
+[paths]
+data = "data"
+models = "models"
+indexes = "indexes"
+runs = "runs"
+cache = "cache"
+gate = "gate.json"
+
+[data]
+source = "https://raw.githubusercontent.com/IBM/mt-rag-benchmark"
+commit = "a8e14c815780653a4e628805c6e734498140c1b9"
+collections = ["clapnq", "cloud", "fiqa", "govt"]
+
+[bm25]
+k1 = 1.2
+b = 0.75
+
+[sparse]
+model = "opensearch-sparse-doc-v2-mini"
+onnx = "onnx/model_int8.onnx"
+max_length = 512
+token_budget = 2048
+threads = 0
+max_terms = 256
+activation = "log1p"
+
+[rerank]
+model = "ms-marco-MiniLM-L6-v2"
+onnx = "onnx/model_quint8_avx2.onnx"
+max_length = 512
+token_budget = 8192
+threads = 0
+candidates = 30
+blend = 0.2
+
+[retrieval]
+depth = 100
+rrf_k = 60.0
+context_turns = 3
+context_decay = 0.5
+
+[retrieval.legs]
+bm25 = 0.25
+sparse = 1.0
+
+[retrieval.queries]
+last = 1.0
+context = 1.0
+rewrite = 1.0
+keywords = 1.0
+
+[llm]
+base_url = "http://127.0.0.1:8080/v1"
+model = "qwen3.5-2b"
+timeout = 900.0
+seed = 7
+temperature = 0.0
+retries = 2
+
+[rewrite]
+history_turns = 6
+agent_words = 60
+max_tokens = 160
+
+[gate]
+enabled = true
+clarify = true
+vague_rate = 0.05
+
+[answer]
+passages = 5
+evidence_tokens = 600
+history_turns = 2
+agent_words = 60
+max_tokens = 220
+idk_text = "I do not have specific information about that in the documents I can search."
+
+[api]
+host = "127.0.0.1"
+port = 8000
+max_sessions = 256
+session_ttl = 3600.0
+
+[eval]
+bertscore_model = "deberta-xlarge-mnli"
+bertscore_layer = 40
+cached_texts = 64
+judge_max_tokens = 96
